@@ -1,0 +1,23 @@
+{
+
+  "extraBabelPlugins": [
+    ["import", { "libraryName": "antd", "libraryDirectory": "es", "style": true }]
+  ],
+  "publicPath": "/",
+  "proxy": {
+  		"/agw/api": {
+  			"target": "http://192.168.1.204/agw/api",
+  			"changeOrigin": true,
+  			"pathRewrite": {
+  			"/agw/api": ""
+  			}
+  		},
+  		"/agw/auth": {
+        "target": "http://192.168.1.204/agw/auth",
+        "changeOrigin": true,
+        "pathRewrite": {
+        "/agw/auth": ""
+        }
+      }
+  	}
+}
