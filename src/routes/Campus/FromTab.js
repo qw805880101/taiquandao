@@ -76,7 +76,7 @@ class UserDetailsFromImp extends React.Component {
             label="校区名称"
             hasFeedback
           >
-            {getFieldDecorator('campusName', {
+            {getFieldDecorator('Name', {
               rules: [
                 {required: true, message: '请输入校区名称!'},
               ],
@@ -90,7 +90,7 @@ class UserDetailsFromImp extends React.Component {
             label="校区地址"
             hasFeedback
           >
-            {getFieldDecorator('campusAddress', {
+            {getFieldDecorator('Address', {
               rules: [
                 {required: true, message: '请输入校区地址!'},
               ],

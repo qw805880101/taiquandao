@@ -1,11 +1,11 @@
-import React, { PureComponent } from 'react';
-import { Layout, Menu, Icon } from 'antd';
+import React, {PureComponent} from 'react';
+import {Icon, Layout, Menu} from 'antd';
 import pathToRegexp from 'path-to-regexp';
-import { Link } from 'dva/router';
+import {Link} from 'dva/router';
 import styles from './index.less';
 
-const { Sider } = Layout;
-const { SubMenu } = Menu;
+const {Sider} = Layout;
+const {SubMenu} = Menu;
 
 // Allow menu.js config icon as string or ReactNode
 //   icon: 'setting',
@@ -13,10 +13,10 @@ const { SubMenu } = Menu;
 //   icon: <Icon type="setting" />,
 const getIcon = (icon) => {
   if (typeof icon === 'string' && icon.indexOf('http') === 0) {
-    return <img src={icon} alt="icon" className={styles.icon} />;
+    return <img src={icon} alt="icon" className={styles.icon}/>;
   }
   if (typeof icon === 'string') {
-    return <Icon type={icon} />;
+    return <Icon type={icon}/>;
   }
   return icon;
 };
@@ -29,6 +29,7 @@ export default class SiderMenu extends PureComponent {
       openKeys: this.getDefaultCollapsedSubMenus(props),
     };
   }
+
   componentWillReceiveProps(nextProps) {
     if (nextProps.location.pathname !== this.props.location.pathname) {
       this.setState({
@@ -36,13 +37,14 @@ export default class SiderMenu extends PureComponent {
       });
     }
   }
+
   /**
    * Convert pathname to openKeys
    * /list/search/articles = > ['list','/list/search']
    * @param  props
    */
   getDefaultCollapsedSubMenus(props) {
-    const { location: { pathname } } = props || this.props;
+    const {location: {pathname}} = props || this.props;
     // eg. /list/search/articles = > ['','list','search','articles']
     let snippets = pathname.split('/');
     // Delete the end
@@ -68,6 +70,7 @@ export default class SiderMenu extends PureComponent {
     // eg. ['list','list/search']
     return snippets;
   }
+
   /**
    * Recursively flatten the data
    * [{path:string},{path:string}] => {path,path2}
@@ -85,6 +88,7 @@ export default class SiderMenu extends PureComponent {
     });
     return keys;
   }
+
   /**
    * Get selected child nodes
    * /user/chen => ['user','/user/:id']
@@ -103,7 +107,7 @@ export default class SiderMenu extends PureComponent {
   getMenuItemPath = (item) => {
     const itemPath = this.conversionPath(item.path);
     const icon = getIcon(item.icon);
-    const { target, name } = item;
+    const {target, name} = item;
     // Is it a http link
     if (/^https?:\/\//.test(itemPath)) {
       return (
@@ -117,7 +121,9 @@ export default class SiderMenu extends PureComponent {
         to={itemPath}
         target={target}
         replace={itemPath === this.props.location.pathname}
-        onClick={this.props.isMobile ? () => { this.props.onCollapse(true); } : undefined}
+        onClick={this.props.isMobile ? () => {
+          this.props.onCollapse(true);
+        } : undefined}
       >
         {icon}<span>{name}</span>
       </Link>
@@ -126,7 +132,7 @@ export default class SiderMenu extends PureComponent {
   /**
    * get SubMenu or Item
    */
-  getSubMenuOrItem=(item, onMenuClick) => {
+  getSubMenuOrItem = (item, onMenuClick) => {
     if (item.children && item.children.some(child => child.name)) {
       return (
         <SubMenu
@@ -170,7 +176,7 @@ export default class SiderMenu extends PureComponent {
   }
   // conversion Path
   // 转化路径
-  conversionPath=(path) => {
+  conversionPath = (path) => {
     if (path && path.indexOf('http') === 0) {
       return path;
     } else {
@@ -180,7 +186,7 @@ export default class SiderMenu extends PureComponent {
   // permission to check
   checkPermissionItem = (authority, ItemDom) => {
     if (this.props.Authorized && this.props.Authorized.check) {
-      const { check } = this.props.Authorized;
+      const {check} = this.props.Authorized;
       return check(
         authority,
         ItemDom
@@ -197,14 +203,17 @@ export default class SiderMenu extends PureComponent {
       openKeys: isMainMenu ? [lastOpenKey] : [...openKeys],
     });
   }
+
   render() {
-    const { logo, collapsed, location: { pathname }, onCollapse ,menuData, onMenuClick} = this.props;
-    const { openKeys } = this.state;
+    const {logo, collapsed, location: {pathname}, onCollapse, menuData, onMenuClick} = this.props;
+    const {openKeys} = this.state;
     // Don't show popup menu when it is been collapsed
     const menuProps = collapsed ? {} : {
       openKeys,
     };
-    {    this.menus = menuData}
+    {
+      this.menus = menuData
+    }
     // if pathname can't match, use the nearest parent's key
     let selectedKeys = this.getSelectedMenuKeys(pathname);
     if (!selectedKeys.length) {
@@ -222,7 +231,7 @@ export default class SiderMenu extends PureComponent {
       >
         <div className={styles.logo} key="logo">
           <Link to="/">
-            <img src={logo} alt="logo" />
+            <img src={logo} alt="logo"/>
             <h1>管理平台</h1>
           </Link>
         </div>
@@ -234,9 +243,9 @@ export default class SiderMenu extends PureComponent {
           onOpenChange={this.handleOpenChange}
           onClick={onMenuClick}
           selectedKeys={selectedKeys}
-          style={{ padding: '16px 0', width: '100%' }}
+          style={{padding: '16px 0', width: '100%'}}
         >
-             {this.getNavMenuItems(this.menus)}
+          {this.getNavMenuItems(this.menus)}
 
           {/*{this.getNavMenuItems(menuData, onMenuClick)}*/}
         </Menu>

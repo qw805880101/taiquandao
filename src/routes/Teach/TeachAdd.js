@@ -8,6 +8,12 @@ import {getQueryUrlParamVal} from "../../utils/utils";
 
 let type = '';
 
+let isResult = false;
+
+@connect(({teach, loading}) => ({
+  teach,
+  submitting: loading.effects['teach/addTeach'],
+}))
 export default class Agency extends React.PureComponent {
 
   componentDidMount() {
@@ -20,21 +26,13 @@ export default class Agency extends React.PureComponent {
 
   Submit = (values) => {
     console.log('提交的参数', values);
-    // if (values.twoDimensionCode) {
-    //   values.twoDimensionCode = values.twoDimensionCode.split(',')[1];
-    // }
-    // this.props.dispatch({ //机构注册
-    //   type: 'agency/agencyRegister',
-    //   payload: {
-    //     "appVersion": "1.0.0",
-    //     "timestamp": new Date().getTime(),
-    //     "terminalOs": "H5",
-    //     "actNo": "B2001",
-    //     "userId": sessionStorage.userId,
-    //     "id": type === 'mod' ? getQueryUrlParamVal('userId') : '',
-    //     ...values
-    //   },
-    // });
+    isResult = true;
+    this.props.dispatch({ //机构注册
+      type: 'teach/addTeach',
+      payload: {
+        ...values
+      },
+    });
   }
 
   getAgencyDetail = (id) => { //获取机构详情
@@ -82,6 +80,17 @@ export default class Agency extends React.PureComponent {
   }
 
   render() {
+
+    const {teach: {addTeachData}} = this.props;
+    console.log("addCampusData,", addTeachData);
+    if (addTeachData.code != null && addTeachData.code != 200 && isResult) {
+      isResult = false;
+      alert(addTeachData.message);
+    } else if (addTeachData.code === 200 && addTeachData.success) {
+      // alert(addCampusData.message != null ? addCampusData.message : '成功');
+      this.props.dispatch(routerRedux.push('/teach/teachList'));
+    }
+
     return (
       <div style={{background: '#fff', height: '100%'}}>
         <PageHeaderLayout

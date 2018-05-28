@@ -8,6 +8,12 @@ import {getQueryUrlParamVal} from "../../utils/utils";
 
 let type = '';
 
+
+@connect(({classModel, campus, loading}) => ({
+  classModel,
+  campus,
+  submitting: loading.effects['classModel/addClass'],
+}))
 export default class Agency extends React.PureComponent {
 
   componentDidMount() {
@@ -16,6 +22,19 @@ export default class Agency extends React.PureComponent {
     if (id != null && id != '') {
       this.getAgencyDetail(id);
     }
+    this.getCampusList();
+  }
+
+  getCampusList = (data) => { //获取校区
+    if (!data) {
+    }
+    this.isMerIdSearch = false;
+    this.props.dispatch({
+      type: 'campus/queryCampusList',
+      payload: {
+        ...data,
+      }
+    });
   }
 
   Submit = (values) => {
@@ -31,21 +50,12 @@ export default class Agency extends React.PureComponent {
     };
     console.log("values:", values);
 
-    // if (values.twoDimensionCode) {
-    //   values.twoDimensionCode = values.twoDimensionCode.split(',')[1];
-    // }
-    // this.props.dispatch({ //机构注册
-    //   type: 'agency/agencyRegister',
-    //   payload: {
-    //     "appVersion": "1.0.0",
-    //     "timestamp": new Date().getTime(),
-    //     "terminalOs": "H5",
-    //     "actNo": "B2001",
-    //     "userId": sessionStorage.userId,
-    //     "id": type === 'mod' ? getQueryUrlParamVal('userId') : '',
-    //     ...values
-    //   },
-    // });
+    this.props.dispatch({
+      type: 'classModel/addClass',
+      payload: {
+        ...values,
+      }
+    });
   }
 
   getAgencyDetail = (id) => { //获取机构详情
@@ -93,6 +103,16 @@ export default class Agency extends React.PureComponent {
   }
 
   render() {
+
+    const {campus: {campusList}, classModel: {addClassData}} = this.props;
+
+    if (addClassData.code != null && addClassData.code != 200) {
+      alert(addClassData.message);
+    } else if (addClassData.code === 200 && addClassData.success) {
+      // alert(addCampusData.message != null ? addCampusData.message : '成功');
+      this.props.dispatch(routerRedux.push('/teach/teachList'));
+    }
+
     return (
       <div style={{background: '#fff', height: '100%'}}>
         <PageHeaderLayout
@@ -101,6 +121,7 @@ export default class Agency extends React.PureComponent {
           <FromTab
             Submit={this.Submit}
             Delete={this.onDelete}
+            campusList={campusList}
           />
         </PageHeaderLayout>
       </div>

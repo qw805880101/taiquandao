@@ -8,8 +8,12 @@ import {getQueryUrlParamVal} from "../../utils/utils";
 
 let type = '';
 
-export default class Agency extends React.PureComponent {
 
+@connect(({campus, loading}) => ({
+  campus,
+  submitting: loading.effects['campus/addCampus'],
+}))
+export default class Agency extends React.PureComponent {
   componentDidMount() {
     const id = getQueryUrlParamVal('userId');
     type = getQueryUrlParamVal('type'); //
@@ -20,21 +24,12 @@ export default class Agency extends React.PureComponent {
 
   Submit = (values) => {
     console.log('提交的参数', values);
-    // if (values.twoDimensionCode) {
-    //   values.twoDimensionCode = values.twoDimensionCode.split(',')[1];
-    // }
-    // this.props.dispatch({ //机构注册
-    //   type: 'agency/agencyRegister',
-    //   payload: {
-    //     "appVersion": "1.0.0",
-    //     "timestamp": new Date().getTime(),
-    //     "terminalOs": "H5",
-    //     "actNo": "B2001",
-    //     "userId": sessionStorage.userId,
-    //     "id": type === 'mod' ? getQueryUrlParamVal('userId') : '',
-    //     ...values
-    //   },
-    // });
+    this.props.dispatch({ //机构注册
+      type: 'campus/addCampus',
+      payload: {
+        ...values
+      },
+    });
   }
 
   getAgencyDetail = (id) => { //获取机构详情
@@ -82,6 +77,16 @@ export default class Agency extends React.PureComponent {
   }
 
   render() {
+
+    const {campus: {addCampusData}} = this.props;
+    console.log("addCampusData,", addCampusData);
+    if (addCampusData.code != null && addCampusData.code != 200) {
+      alert(addCampusData.message);
+    } else if (addCampusData.code === 200 && addCampusData.success) {
+      // alert(addCampusData.message != null ? addCampusData.message : '成功');
+      this.props.dispatch(routerRedux.push('/campus/campusList'));
+    }
+
     return (
       <div style={{background: '#fff', height: '100%'}}>
         <PageHeaderLayout

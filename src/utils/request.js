@@ -79,14 +79,14 @@ export default function request(url, options) {
       const {dispatch} = store;
       json.then((data) => {
         if (data && data.code) {
-          if (data.code == 801 || data.code == 802 || data.code == 803 || data.code == 804) {
-            alert(data.msg);
+          if (data.code == 1003 || data.code == 802 || data.code == 803 || data.code == 804) {
+            alert(data.message);
             dispatch(routerRedux.push('/user'));
             return;
           }
         }
         if (data && data.code && data.code != 200) {
-          alert(data.msg);
+          alert(data.message);
           return;
         }
       })

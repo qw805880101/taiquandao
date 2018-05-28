@@ -4,7 +4,7 @@ import {Checkbox, Alert} from 'antd';
 import Login from '../../components/Login';
 import styles from './Login.less';
 
-const {Tab, UserName, Password, Submit, MerName} = Login;
+const {Tab, UserName, Password, Submit} = Login;
 
 
 @connect(({global, login, loading}) => ({
@@ -30,27 +30,10 @@ export default class LoginPage extends Component {
         type: 'login/login',
         payload: {
           ...values,
-          "appVersion": "1.0.0",
-          "timestamp": new Date().getTime(),
-          "terminalOs": "H5",
-          "actNo": "A1001",
           type,
         },
       });
     }
-  }
-
-  /*
-  * 打开页面自动调用token接口
-  * */
-  componentDidMount() {
-    this.props.dispatch({
-      type: 'global/getToken',
-      payload: {
-        "username": "11rrr660",
-        "password": "255rrr550",
-      },
-    });
   }
 
   changeAutoLogin = (e) => {
@@ -61,7 +44,7 @@ export default class LoginPage extends Component {
 
   renderMessage = (content) => {
     return (
-      <Alert style={{marginBottom:24}} message={content} type="error" showIcon/>
+      <Alert style={{marginBottom: 24}} message={content} type="error" showIcon/>
     );
   }
 
@@ -81,41 +64,22 @@ export default class LoginPage extends Component {
               login.loginData.code != '200' &&
               login.loginData.code != null &&
               !login.submitting &&
-              this.renderMessage(login.loginData.msg)
+              this.renderMessage(login.loginData.message)
             }
             {
               login.loginData.result != null &&
-              login.loginData.result.respCode != '0000' &&
-              login.loginData.result.respCode != null &&
+              login.loginData.result.code != '0000' &&
+              login.loginData.result.code != null &&
               !login.submitting &&
-              this.renderMessage(login.loginData.result.respMsg)
+              this.renderMessage(login.loginData.result.message)
             }
-            <UserName name="userName" placeholder="admin/user"/>
-            <Password name="password" placeholder="888888/123456"/>
-            <MerName name="merName" placeholder="机构名称"/>
+            <UserName name="Mobile" placeholder="admin/user"/>
+            <Password name="Password" placeholder="888888/123456"/>
           </Tab>
-          {/* <Tab key="mobile" tab="手机号登录"> */}
-          {/* { */}
-          {/* login.status === 'error' && */}
-          {/* login.type === 'mobile' && */}
-          {/* !login.submitting && */}
-          {/* this.renderMessage('验证码错误') */}
-          {/* } */}
-          {/* <Mobile name="mobile" /> */}
-          {/* <Captcha name="captcha" /> */}
-          {/* </Tab> */}
           <div>
             <Checkbox checked={this.state.autoLogin} onChange={this.changeAutoLogin}>自动登录</Checkbox>
-            {/* <a style={{ float: 'right' }} href="">忘记密码</a> */}
           </div>
           <Submit loading={submitting}>登录</Submit>
-          {/* <div className={styles.other}> */}
-          {/* 其他登录方式 */}
-          {/* <Icon className={styles.icon} type="alipay-circle" /> */}
-          {/* <Icon className={styles.icon} type="taobao-circle" /> */}
-          {/* <Icon className={styles.icon} type="weibo-circle" /> */}
-          {/* <Link className={styles.register} to="/user/register">注册账户</Link> */}
-          {/* </div> */}
         </Login>
       </div>
     );

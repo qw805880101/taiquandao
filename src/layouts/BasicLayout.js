@@ -66,7 +66,6 @@ const query = {
   },
 };
 
-@MenuData
 class BasicLayout extends React.PureComponent {
   static childContextTypes = {
     location: PropTypes.object,

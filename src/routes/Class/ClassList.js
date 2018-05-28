@@ -6,31 +6,14 @@ import PageHeaderLayout from '../../layouts/PageHeaderLayout';
 
 let delResult = '';
 
-const data = [{
-  campusId: '01',
-  className: '黑带1班',
-  campus: '浦东校区',
-  rank: '黑带',
-}, {
-  campusId: '02',
-  className: '黑带2班',
-  campus: '峨山校区',
-  rank: '黑带',
-}, {
-  campusId: '03',
-  className: '黑带3班',
-  campus: '浦东校区',
-  rank: '黑带',
-},];
-
-@connect(({userManage, agency, loading}) => ({
-  userManage,
-  agency,
-  submitting: loading.effects['userManage/getUser' || 'userManage/delUser'],
+@connect(({classModel, loading}) => ({
+  classModel,
+  submitting: loading.effects['classModel/queryClassList'],
 }))
 
 export default class UserDisplay extends React.PureComponent {
   componentDidMount() {
+    this.getClassList();
   }
 
   state = {
@@ -39,16 +22,16 @@ export default class UserDisplay extends React.PureComponent {
     isMerIdSearch: false,
     goodsColumns: [{
       title: '班级名称',
-      dataIndex: 'className',
-      key: 'className',
+      dataIndex: 'name',
+      key: 'name',
     }, {
       title: '所在校区',
-      dataIndex: 'campus',
-      key: 'campus',
+      dataIndex: 'dan',
+      key: 'dan',
     }, {
       title: '段位',
-      dataIndex: 'rank',
-      key: 'rank',
+      dataIndex: 'danDesc',
+      key: 'danDesc',
     }, {
       title: '操作',
       key: 'action',
@@ -69,23 +52,16 @@ export default class UserDisplay extends React.PureComponent {
     }],
   }
 
-  getAgencyList = (data) => { //获取机构列表请求
-    // if (!data) {
-    //   this.state.treeData = [];
-    //   allAgencyListData = [];
-    //   this.props.agency.agencyList = [];
-    // }
-    // this.isMerIdSearch = false;
-    // this.props.dispatch({
-    //   type: 'agency/agencyList',
-    //   payload: {
-    //     "appVersion": "1.0.0",
-    //     "timestamp": new Date().getTime(),
-    //     "terminalOs": "H5",
-    //     "actNo": "B2001",
-    //     ...data,
-    //   }
-    // });
+  getClassList = (data) => { //获取机构列表请求
+    if (!data) {
+    }
+    this.isMerIdSearch = false;
+    this.props.dispatch({
+      type: 'classModel/queryClassList',
+      payload: {
+        ...data,
+      }
+    });
   }
 
   onDelete = (key) => {
@@ -119,14 +95,14 @@ export default class UserDisplay extends React.PureComponent {
 
   changeSearchId = (e) => {
     if (e.target.value.length == 0) {
-      this.setState({goodsData: this.props.userManage.list});
+      this.setState({goodsData: this.props.classModel.classList});
     }
     this.setState({searchName: e.target.value});
   }
 
   searchOnclick = () => {
     if (this.state.searchName === '') {
-      this.setState({goodsData: this.props.userManage.list});
+      this.setState({goodsData: this.props.classModel.classList});
     } else {
       this.isMerIdSearch = true;
       this.changeTab();
@@ -137,22 +113,22 @@ export default class UserDisplay extends React.PureComponent {
     const {searchName} = this.state;
     const reg = new RegExp(searchName, 'gi');
     this.setState({
-      goodsData: this.props.userManage.list.map((record) => {
+      goodsData: this.props.classModel.classList.map((record) => {
         let searchNameMatch;
         if (searchName) {
-          if (record.userName == null) {
+          if (record.name == null) {
             return null;
           }
-          searchNameMatch = record.userName.match(reg);
+          searchNameMatch = record.name.match(reg);
           if (!searchNameMatch) {
             return null;
           }
         }
         return {
           ...record,
-          userName: (
+          name: (
             <span>
-              {record.userName.split(reg).map((text, i) => (
+              {record.name.split(reg).map((text, i) => (
                 i > 0 ? [<span className="highlight">{searchNameMatch[0]}</span>, text] : text
               ))}
             </span>
@@ -168,6 +144,13 @@ export default class UserDisplay extends React.PureComponent {
 
 
   render() {
+
+    const {classModel: {classList}} = this.props;
+
+    if (!this.isMerIdSearch) { //判断是否筛选
+      this.setState({goodsData: classList});
+    }
+
     return (
       <div style={{background: '#fff', height: '100%'}}>
         <PageHeaderLayout title="班级管理"
@@ -183,7 +166,7 @@ export default class UserDisplay extends React.PureComponent {
 
           <Table
             style={{marginBottom: 24, marginTop: 24, marginRight: 24}}
-            dataSource={data}
+            dataSource={this.state.goodsData}
             columns={this.state.goodsColumns}
             rowKey="id"
             onDelete={this.onDelete}

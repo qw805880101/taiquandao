@@ -86,35 +86,35 @@ export const getRouterData = (app) => {
     },
     //校区列表
     '/campus/campusList': {
-      component: dynamicWrapper(app, ['login'], () => import('../routes/Campus/CampusList')),
+      component: dynamicWrapper(app, ['campus'], () => import('../routes/Campus/CampusList')),
     },
     //校区详情
     '/campus/campusAdd': {
-      component: dynamicWrapper(app, ['login'], () => import('../routes/Campus/CampusAdd')),
+      component: dynamicWrapper(app, ['campus'], () => import('../routes/Campus/CampusAdd')),
     },
     //班级列表
     '/class/classList': {
-      component: dynamicWrapper(app, ['login'], () => import('../routes/Class/ClassList')),
+      component: dynamicWrapper(app, ['classModel'], () => import('../routes/Class/ClassList')),
     },
     //班级详情
     '/class/classAdd': {
-      component: dynamicWrapper(app, ['login'], () => import('../routes/Class/ClassAdd')),
+      component: dynamicWrapper(app, ['campus', 'classModel'], () => import('../routes/Class/ClassAdd')),
     },
     //教师列表
     '/teach/teachList': {
-      component: dynamicWrapper(app, ['login'], () => import('../routes/Teach/TeachList')),
+      component: dynamicWrapper(app, ['teach'], () => import('../routes/Teach/TeachList')),
     },
     //教师详情
     '/teach/teachAdd': {
-      component: dynamicWrapper(app, ['login'], () => import('../routes/Teach/TeachAdd')),
+      component: dynamicWrapper(app, ['teach'], () => import('../routes/Teach/TeachAdd')),
     },
     //学员列表
     '/student/studentList': {
-      component: dynamicWrapper(app, ['login'], () => import('../routes/Student/StudentList')),
+      component: dynamicWrapper(app, ['student'], () => import('../routes/Student/StudentList')),
     },
     //学员详情
     '/student/studentAdd': {
-      component: dynamicWrapper(app, ['login'], () => import('../routes/Student/StudentAdd')),
+      component: dynamicWrapper(app, ['classModel', 'campus', 'student'], () => import('../routes/Student/StudentAdd')),
     },
     //家长列表
     '/parent/parentList': {

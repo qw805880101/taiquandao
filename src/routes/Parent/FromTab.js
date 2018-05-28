@@ -203,7 +203,11 @@ class UserDetailsFromImp extends React.Component {
                 {required: true, message: '请输入密码!'},
               ],
             })(
-              <Input type={"password"} placeholder="请输入密码"/>
+              <div>
+                < Input placeholder="请输入密码" type="password"/>
+                <Input type="password" style={{width: 0, height: 0, float: 'left', visibility: 'hidden'}}
+                />
+              </div>
             )}
           </FormItem>
 

@@ -10,31 +10,44 @@ const Option = Select.Option;
 const agencyTreeData = data => data.map((item) => {
   return (
     <Option key={item.id}>
-      {item.date}
+      {item.name}
     </Option>
   );
 });
 
-const campusData = [{
+const rankData = [{
   id: '00',
-  date: '浦东校区',
+  name: '白',
 }, {
   id: '01',
-  date: '峨山校区',
+  name: '白黄',
 }, {
-  id: '02',
-  date: '闵行校区',
-}];
-
-const classData = [{
-  id: '00',
-  date: '1班',
+  id: '03',
+  name: '黄',
 }, {
-  id: '01',
-  date: '2班',
+  id: '04',
+  name: '黄绿',
 }, {
-  id: '02',
-  date: '3班',
+  id: '05',
+  name: '绿',
+}, {
+  id: '06',
+  name: '绿蓝',
+}, {
+  id: '07',
+  name: '蓝',
+}, {
+  id: '08',
+  name: '蓝红',
+}, {
+  id: '09',
+  name: '红',
+}, {
+  id: '10',
+  name: '红黑',
+}, {
+  id: '11',
+  name: '黑一段',
 }];
 
 class UserDetailsFromImp extends React.Component {
@@ -65,10 +78,12 @@ class UserDetailsFromImp extends React.Component {
   onCampusChange = (e) => {
     console.log("e:", e);
     this.setState({classStatus: false})
+    this.props.getClassList(e);
   }
 
   render() {
     const {getFieldDecorator} = this.props.form;
+    const {campusList, classList} = this.props;
 
     // if (type === 'add') { //类型新增
     //   this.disPlay = true;
@@ -93,7 +108,7 @@ class UserDetailsFromImp extends React.Component {
             label="学员姓名"
             hasFeedback
           >
-            {getFieldDecorator('studentName', {
+            {getFieldDecorator('Name', {
               rules: [
                 {required: true, message: '请输入学员姓名!'},
               ],
@@ -107,13 +122,13 @@ class UserDetailsFromImp extends React.Component {
             label="所在校区"
             hasFeedback
           >
-            {getFieldDecorator('studentCampus', {
+            {getFieldDecorator('TrainingOrganizationId', {
               rules: [
                 {required: true, message: '请选择所在校区!'},
               ],
             })(
               <Select onChange={this.onCampusChange} placeholder="请选择所在校区">
-                {agencyTreeData(campusData)}
+                {agencyTreeData(campusList)}
               </Select>
             )}
           </FormItem>
@@ -123,13 +138,13 @@ class UserDetailsFromImp extends React.Component {
             label="所在班级"
             hasFeedback
           >
-            {getFieldDecorator('studentClass', {
+            {getFieldDecorator('ClassId', {
               rules: [
                 {required: true, message: '请选择所在班级!'},
               ],
             })(
               <Select placeholder={this.state.classStatus ? "请先选择所在校区" : "请选择所在班级"} disabled={this.state.classStatus}>
-                {agencyTreeData(classData)}
+                {agencyTreeData(classList)}
               </Select>
             )}
           </FormItem>
@@ -139,12 +154,14 @@ class UserDetailsFromImp extends React.Component {
             label="学员段位"
             hasFeedback
           >
-            {getFieldDecorator('studentRank', {
+            {getFieldDecorator('IdCardNo', {
               rules: [
-                {required: true, message: '请输入学员段位!'},
+                {required: true, message: '请选择学员段位!'},
               ],
             })(
-              <Input placeholder="请输入学员段位"/>
+              <Select placeholder="请选择学员段位">
+                {agencyTreeData(rankData)}
+              </Select>
             )}
           </FormItem>
           <FormItem

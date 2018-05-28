@@ -206,3 +206,29 @@ const reg = /(((^https?:(?:\/\/)?)(?:[-;:&=\+\$,\w]+@)?[A-Za-z0-9.-]+|(?:www.|[-
 export function isUrl(path) {
   return reg.test(path);
 }
+
+/**
+ * 设置url地址后面添加参数
+ * @param url
+ * @param params
+ * @returns {*}
+ */
+export function setUrl(url, params) {
+  if (sessionStorage.token) {
+    params = {
+      ...params,
+      token: sessionStorage.token,
+    }
+  }
+  if (params) {
+    let paramsArray = [];
+    //拼接参数
+    Object.keys(params).forEach(key => paramsArray.push(key + '=' + params[key]))
+    if (url.search(/\?/) === -1) {
+      url += '?' + paramsArray.join('&')
+    } else {
+      url += '&' + paramsArray.join('&')
+    }
+  }
+  return url;
+}

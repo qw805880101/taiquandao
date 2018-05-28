@@ -20,7 +20,7 @@ for (let i = 10; i < 36; i++) {
 const agencyTreeData = data => data.map((item) => {
   return (
     <Option key={item.id}>
-      {item.date}
+      {item.name}
     </Option>
   );
 });
@@ -32,74 +32,63 @@ for (let i = 0; i < 24; i++) {
 
 const dateData = [{
   id: '00',
-  date: '星期日',
+  name: '星期日',
 }, {
   id: '01',
-  date: '星期一',
+  name: '星期一',
 }, {
   id: '02',
-  date: '星期二',
+  name: '星期二',
 }, {
   id: '03',
-  date: '星期三',
+  name: '星期三',
 }, {
   id: '04',
-  date: '星期四',
+  name: '星期四',
 }, {
   id: '05',
-  date: '星期五',
+  name: '星期五',
 }, {
   id: '06',
-  date: '星期六',
+  name: '星期六',
 },];
-
-const campusData = [{
-  id: '00',
-  date: '浦东校区',
-}, {
-  id: '01',
-  date: '峨山校区',
-}, {
-  id: '02',
-  date: '闵行校区',
-}];
 
 const rankData = [{
   id: '00',
-  date: '白',
+  name: '白',
 }, {
   id: '01',
-  date: '白黄',
+  name: '白黄',
 }, {
   id: '03',
-  date: '黄',
+  name: '黄',
 }, {
   id: '04',
-  date: '黄绿',
+  name: '黄绿',
 }, {
   id: '05',
-  date: '绿',
+  name: '绿',
 }, {
   id: '06',
-  date: '绿蓝',
+  name: '绿蓝',
 }, {
   id: '07',
-  date: '蓝',
+  name: '蓝',
 }, {
   id: '08',
-  date: '蓝红',
+  name: '蓝红',
 }, {
   id: '09',
-  date: '红',
+  name: '红',
 }, {
   id: '10',
-  date: '红黑',
+  name: '红黑',
 }, {
   id: '11',
-  date: '黑一段',
+  name: '黑一段',
 }, {
   id: '12',
-  date: '混',
+  name: '混',
 }];
 
 class UserDetailsFromImp extends React.Component {
@@ -128,6 +117,8 @@ class UserDetailsFromImp extends React.Component {
   render() {
     const {getFieldDecorator} = this.props.form;
 
+    const {campusList} = this.props;
+
     // if (type === 'add') { //类型新增
     //   this.disPlay = true;
     //   this.delDisplay = 'none';
@@ -151,7 +142,7 @@ class UserDetailsFromImp extends React.Component {
             label="班级名称"
             hasFeedback
           >
-            {getFieldDecorator('campusName', {
+            {getFieldDecorator('Name', {
               rules: [
                 {required: true, message: '请输入班级名称!'},
               ],
@@ -165,13 +156,13 @@ class UserDetailsFromImp extends React.Component {
             label="所在校区"
             hasFeedback
           >
-            {getFieldDecorator('campusAddress', {
+            {getFieldDecorator('TrainingOrganizationId', {
               rules: [
                 {required: true, message: '请选择所在校区!'},
               ],
             })(
               <Select placeholder="请选择所在校区">
-                {agencyTreeData(campusData)}
+                {agencyTreeData(campusList)}
               </Select>
             )}
           </FormItem>
@@ -180,7 +171,7 @@ class UserDetailsFromImp extends React.Component {
             label="老师"
             hasFeedback
           >
-            {getFieldDecorator('teachList', {
+            {getFieldDecorator('TeacherId', {
               rules: [
                 {required: true, message: '请选择老师!'},
               ],
@@ -198,7 +189,7 @@ class UserDetailsFromImp extends React.Component {
             label="段位"
             hasFeedback
           >
-            {getFieldDecorator('classDate', {
+            {getFieldDecorator('rank', {
               rules: [
                 {required: true, message: '请选择段位!'},
               ],
@@ -228,14 +219,14 @@ class UserDetailsFromImp extends React.Component {
                 {required: true, message: '请选择上课时间!'},
               ],
             })(
-              <TimePicker format={'HH:mm'} style={{width: '30%', marginLeft: '5%'}}/>
+              <TimePicker format={'HH:mm'} style={{width: '30%', marginLeft: '5%'}} placeholder="请选择开始时间"/>
             )}
             {getFieldDecorator('classDate_1_endTime', {
               rules: [
                 {required: true, message: '请选择上课时间!'},
               ],
             })(
-              <TimePicker format={'HH:mm'} style={{width: '30%', marginLeft: '5%'}}/>
+              <TimePicker format={'HH:mm'} style={{width: '30%', marginLeft: '5%'}} placeholder="请选择结束时间"/>
             )}
           </FormItem>
 
@@ -258,18 +249,14 @@ class UserDetailsFromImp extends React.Component {
                 {required: false, message: '请选择上课时间!'},
               ],
             })(
-              <Select style={{width: '30%', marginLeft: '5%'}} placeholder="请选择开始时间">
-                {timeData}
-              </Select>
+              <TimePicker format={'HH:mm'} style={{width: '30%', marginLeft: '5%'}} placeholder="请选择开始时间"/>
             )}
             {getFieldDecorator('classDate_2_endTime', {
               rules: [
                 {required: false, message: '请选择上课时间!'},
               ],
             })(
-              <Select style={{width: '30%', marginLeft: '5%'}} placeholder="请选择结束时间">
-                {timeData}
-              </Select>
+              <TimePicker format={'HH:mm'} style={{width: '30%', marginLeft: '5%'}} placeholder="请选择结束时间"/>
             )}
           </FormItem>
 
@@ -292,18 +279,16 @@ class UserDetailsFromImp extends React.Component {
                 {required: false, message: '请选择上课时间!'},
               ],
             })(
-              <Select style={{width: '30%', marginLeft: '5%'}} placeholder="请选择开始时间">
-                {timeData}
-              </Select>
+              <TimePicker format={'HH:mm'} style={{width: '30%', marginLeft: '5%'}} placeholder="请选择开始时间"/>
+
             )}
             {getFieldDecorator('classDate_3_endTime', {
               rules: [
                 {required: false, message: '请选择上课时间!'},
               ],
             })(
-              <Select style={{width: '30%', marginLeft: '5%'}} placeholder="请选择结束时间">
-                {timeData}
-              </Select>
+              <TimePicker format={'HH:mm'} style={{width: '30%', marginLeft: '5%'}} placeholder="请选择结束时间"/>
+
             )}
           </FormItem>
 

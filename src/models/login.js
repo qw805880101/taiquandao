@@ -1,5 +1,5 @@
 import {routerRedux} from 'dva/router';
-import {fakeAccountLogin,testApi} from '../services/api';
+import {login} from '../services/api';
 import {setAuthority} from '../utils/authority';
 import {reloadAuthorized} from '../utils/Authorized';
 
@@ -16,23 +16,21 @@ export default {
 
   effects: {
     * login({payload}, {call, put}) {
-      const response = yield call(fakeAccountLogin, payload);
+      const response = yield call(login, payload);
       yield put({
         type: 'changeLoginStatus',
         payload: response,
       });
       // Login successfully
-      if (response.code == 200 && response.result.respCode === '0000') {
+      if (response.code == 200 && response.success) {
         console.log("登录成功");
         reloadAuthorized();
         const path = {
           pathname: '/',
-          state: response.result,
+          state: response.data,
         }
-        sessionStorage.userId = response.result.permissions.userId;
-        sessionStorage.menuData = JSON.stringify(response.result.permissions.menuList);
+        sessionStorage.token = response.data.token;
         yield put(routerRedux.push(path));
-
       }
     },
     * logout(_, {put, select}) {

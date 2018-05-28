@@ -6,34 +6,15 @@ import PageHeaderLayout from '../../layouts/PageHeaderLayout';
 
 let delResult = '';
 
-const data = [{
-  campusId: '01',
-  studentName: '张三',
-  campus: '浦东校区',
-  class: '黑带1班',
-  rank: '黑带',
-}, {
-  campusId: '02',
-  studentName: '李四',
-  campus: '浦东校区',
-  class: '黑带2班',
-  rank: '黑带',
-}, {
-  campusId: '03',
-  studentName: '王麻子',
-  campus: '浦东校区',
-  class: '黑带3班',
-  rank: '黑带',
-},];
 
-@connect(({userManage, agency, loading}) => ({
-  userManage,
-  agency,
-  submitting: loading.effects['userManage/getUser' || 'userManage/delUser'],
+@connect(({student, loading}) => ({
+  student,
+  submitting: loading.effects['student/queryStudentList'],
 }))
 
 export default class UserDisplay extends React.PureComponent {
   componentDidMount() {
+    this.getStudentList();
   }
 
   state = {
@@ -76,23 +57,16 @@ export default class UserDisplay extends React.PureComponent {
     }],
   }
 
-  getAgencyList = (data) => { //获取机构列表请求
-    // if (!data) {
-    //   this.state.treeData = [];
-    //   allAgencyListData = [];
-    //   this.props.agency.agencyList = [];
-    // }
-    // this.isMerIdSearch = false;
-    // this.props.dispatch({
-    //   type: 'agency/agencyList',
-    //   payload: {
-    //     "appVersion": "1.0.0",
-    //     "timestamp": new Date().getTime(),
-    //     "terminalOs": "H5",
-    //     "actNo": "B2001",
-    //     ...data,
-    //   }
-    // });
+  getStudentList = (data) => { //获取机构列表请求
+    if (!data) {
+    }
+    this.isMerIdSearch = false;
+    this.props.dispatch({
+      type: 'student/queryStudentList',
+      payload: {
+        ...data,
+      }
+    });
   }
 
   onDelete = (key) => {
@@ -175,6 +149,12 @@ export default class UserDisplay extends React.PureComponent {
 
 
   render() {
+    const {submitting, student: {studentList}} = this.props;
+
+    if (!this.isMerIdSearch) { //判断是否筛选
+      this.setState({goodsData: studentList});
+    }
+
     return (
       <div style={{background: '#fff', height: '100%'}}>
         <PageHeaderLayout title="学员管理"
@@ -190,10 +170,11 @@ export default class UserDisplay extends React.PureComponent {
 
           <Table
             style={{marginBottom: 24, marginTop: 24, marginRight: 24}}
-            dataSource={data}
+            dataSource={this.state.goodsData}
             columns={this.state.goodsColumns}
             rowKey="id"
             onDelete={this.onDelete}
+            loading={submitting}
           />
         </PageHeaderLayout>
       </div>

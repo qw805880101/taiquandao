@@ -8,6 +8,12 @@ import {getQueryUrlParamVal} from "../../utils/utils";
 
 let type = '';
 
+@connect(({campus, classModel, student, loading}) => ({
+  campus,
+  classModel,
+  student,
+  submitting: loading.effects['campus/queryCampusList'],
+}))
 export default class Agency extends React.PureComponent {
 
   componentDidMount() {
@@ -16,25 +22,41 @@ export default class Agency extends React.PureComponent {
     if (id != null && id != '') {
       this.getAgencyDetail(id);
     }
+    this.getCampusList();
+  }
+
+  getCampusList = (data) => { //获取校区
+    if (!data) {
+    }
+    this.isMerIdSearch = false;
+    this.props.dispatch({
+      type: 'campus/queryCampusList',
+      payload: {
+        ...data,
+      }
+    });
+  }
+
+  getClassList = (data) => { //获取机构列表请求
+    if (!data) {
+    }
+    this.isMerIdSearch = false;
+    this.props.dispatch({
+      type: 'classModel/queryClassList',
+      payload: {
+        ...data,
+      }
+    });
   }
 
   Submit = (values) => {
     console.log('提交的参数', values);
-    // if (values.twoDimensionCode) {
-    //   values.twoDimensionCode = values.twoDimensionCode.split(',')[1];
-    // }
-    // this.props.dispatch({ //机构注册
-    //   type: 'agency/agencyRegister',
-    //   payload: {
-    //     "appVersion": "1.0.0",
-    //     "timestamp": new Date().getTime(),
-    //     "terminalOs": "H5",
-    //     "actNo": "B2001",
-    //     "userId": sessionStorage.userId,
-    //     "id": type === 'mod' ? getQueryUrlParamVal('userId') : '',
-    //     ...values
-    //   },
-    // });
+    this.props.dispatch({ //机构注册
+      type: 'student/addStudent',
+      payload: {
+        ...values
+      },
+    });
   }
 
   getAgencyDetail = (id) => { //获取机构详情
@@ -82,6 +104,15 @@ export default class Agency extends React.PureComponent {
   }
 
   render() {
+
+    const {campus: {campusList}, classModel: {classList}, student:{addStudentData}} = this.props;
+    if (addStudentData.code != null && addStudentData.code != 200) {
+      alert(addStudentData.message);
+    } else if (addStudentData.code === 200 && addStudentData.success) {
+      // alert(addStudentData.message != null ? addStudentData.message : '成功');
+      this.props.dispatch(routerRedux.push('/campus/campusList'));
+    }
+
     return (
       <div style={{background: '#fff', height: '100%'}}>
         <PageHeaderLayout
@@ -90,6 +121,9 @@ export default class Agency extends React.PureComponent {
           <FromTab
             Submit={this.Submit}
             Delete={this.onDelete}
+            campusList={campusList}
+            classList={classList}
+            getClassList={this.getClassList}
           />
         </PageHeaderLayout>
       </div>

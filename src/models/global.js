@@ -6,7 +6,6 @@ export default {
 
   state: {
     token: '',
-    menus: [],
   },
 
   effects: {
@@ -31,12 +30,6 @@ export default {
       return {
         ...state,
         token: action.payload.token,
-      };
-    },
-    changeMenuData(state, action) {
-      return {
-        ...state,
-        menus: action.payload.result.permissions.menuList,
       };
     },
   },

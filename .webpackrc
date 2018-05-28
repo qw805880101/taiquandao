@@ -5,19 +5,12 @@
   ],
   "publicPath": "/",
   "proxy": {
-  		"/agw/api": {
-  			"target": "http://192.168.1.204/agw/api",
+  		"/api": {
+  			"target": "http://193.112.69.221:9001/api",
   			"changeOrigin": true,
   			"pathRewrite": {
-  			"/agw/api": ""
+  			"/api": ""
   			}
-  		},
-  		"/agw/auth": {
-        "target": "http://192.168.1.204/agw/auth",
-        "changeOrigin": true,
-        "pathRewrite": {
-        "/agw/auth": ""
-        }
-      }
+  		}
   	}
 }

@@ -20,8 +20,7 @@
 */
 
 import React from 'react';
-import {Link} from 'dva/router';
-import {Button, Form, Input, Radio, Select} from 'antd';
+import {Button, Form, Input} from 'antd';
 import styles from '../UserManage/UserStyle.less';
 
 const FormItem = Form.Item;
@@ -76,7 +75,7 @@ class UserDetailsFromImp extends React.Component {
             label="教师姓名"
             hasFeedback
           >
-            {getFieldDecorator('teachName', {
+            {getFieldDecorator('Name', {
               rules: [
                 {required: true, message: '请输入教师姓名!'},
               ],
@@ -90,7 +89,7 @@ class UserDetailsFromImp extends React.Component {
             label="手机号码"
             hasFeedback
           >
-            {getFieldDecorator('teachPhone', {
+            {getFieldDecorator('Mobile', {
               rules: [
                 {required: true, message: '请输入教师手机号码!'},
               ],
@@ -104,12 +103,16 @@ class UserDetailsFromImp extends React.Component {
             label="初始密码"
             hasFeedback
           >
-            {getFieldDecorator('password', {
+            {getFieldDecorator('Password', {
               rules: [
                 {required: true, message: '请输入密码!'},
               ],
             })(
-              <Input type={"password"} placeholder="请输入密码"/>
+              <div>
+                < Input placeholder="请输入密码" type="password"/>
+                <Input type="password" style={{width: 0, height: 0, float: 'left', visibility: 'hidden'}}
+                />
+              </div>
             )}
           </FormItem>
 
