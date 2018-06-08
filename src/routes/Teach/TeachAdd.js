@@ -94,7 +94,7 @@ export default class Agency extends React.PureComponent {
     return (
       <div style={{background: '#fff', height: '100%'}}>
         <PageHeaderLayout
-          title="添加教师"
+          title="教师管理"
         >
           <FromTab
             Submit={this.Submit}

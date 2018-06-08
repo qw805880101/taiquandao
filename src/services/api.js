@@ -176,6 +176,17 @@ export async function addStudent(params) {
   });
 }
 
+/**
+ * 课程列表
+ * @param params
+ * @returns {Promise<Object>}
+ */
+export async function lessonList(params) {
+  return request(setUrl('api/teacher/lesson/LessonList', params), {
+    method: 'POST',
+  });
+}
+
 
 
 

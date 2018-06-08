@@ -38,6 +38,10 @@ export default class UserDisplay extends React.PureComponent {
       dataIndex: 'rank',
       key: 'rank',
     }, {
+      title: '剩余课时',
+      dataIndex: 'rank',
+      key: 'rank',
+    }, {
       title: '操作',
       key: 'action',
       render: (e) => (

@@ -1,4 +1,4 @@
-import {addClass, queryClass} from '../services/api';
+import {addClass, queryClass, lessonList} from '../services/api';
 
 export default {
   namespace: 'classModel',
@@ -6,6 +6,7 @@ export default {
   state: {
     classList: [],
     addClassData: '',
+    lessonListResultList: []
   },
 
   effects: {
@@ -18,9 +19,17 @@ export default {
     },
     * addClass({payload}, {call, put}) {
       const response = yield call(addClass, payload);
-      console.log("addClassData:",response);
+      console.log("addClassData:", response);
       yield put({
         type: 'addClassResult',
+        payload: response,
+      });
+    },
+    * lessonList({payload}, {call, put}) {
+      const response = yield call(lessonList, payload);
+      console.log("lessonListData:", response);
+      yield put({
+        type: 'lessonListResult',
         payload: response,
       });
     },
@@ -38,6 +47,12 @@ export default {
       return {
         ...state,
         addClassData: payload,
+      };
+    },
+    lessonListResult(state, {payload}) {
+      return {
+        ...state,
+        lessonListResultList: payload.data.list,
       };
     },
   },

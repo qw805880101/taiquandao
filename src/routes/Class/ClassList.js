@@ -1,8 +1,10 @@
 import React from 'react';
 import {Link, routerRedux} from 'dva/router';
 import {connect} from 'dva';
-import {Input, Spin, Button, Table, Divider, Popconfirm} from 'antd';
+import {Input, Spin, Button, Table, Divider, Popconfirm, Modal} from 'antd';
 import PageHeaderLayout from '../../layouts/PageHeaderLayout';
+import DetailsFrom from './DetailsFrom';
+
 
 let delResult = '';
 
@@ -17,9 +19,11 @@ export default class UserDisplay extends React.PureComponent {
   }
 
   state = {
+    visible: false,
     searchName: '',
     goodsData: [],
     isMerIdSearch: false,
+    lessonListResultList: [],
     goodsColumns: [{
       title: '班级名称',
       dataIndex: 'name',
@@ -39,17 +43,49 @@ export default class UserDisplay extends React.PureComponent {
         <div>
           <a onClick={() => {
             console.log("e", e);
-          }} href={'#/class/classAdd?userId=' + e.id}>详情</a>
-
+          }} href={'#/class/classAdd?userId=' + e.id}>编辑</a>
           <Divider type="vertical"/>
           <Popconfirm title="确定删除此班级" onConfirm={() => {
             this.onDelete(e.id);
           }}>
             <a>删除</a>
           </Popconfirm>
+          <Divider type="vertical"/>
+          <a onClick={() => {
+            console.log("e", e);
+            this.showModal();
+          }}>课程详情</a>
         </div>
       ),
     }],
+  }
+
+  showModal = () => {
+    this.getLessonList();
+    this.setState({
+      visible: true,
+    });
+  }
+  handleOk = (e) => {
+    this.setState({
+      visible: false,
+    });
+  }
+  handleCancel = (e) => {
+    this.setState({
+      visible: false,
+    });
+  }
+  getLessonList = (data) => { //获取机构列表请求
+    if (!data) {
+    }
+    this.isMerIdSearch = false;
+    this.props.dispatch({
+      type: 'classModel/lessonList',
+      payload: {
+        ...data,
+      }
+    });
   }
 
   getClassList = (data) => { //获取机构列表请求
@@ -145,10 +181,14 @@ export default class UserDisplay extends React.PureComponent {
 
   render() {
 
-    const {classModel: {classList}} = this.props;
+    const {classModel: {classList, lessonListResultList}} = this.props;
 
     if (!this.isMerIdSearch) { //判断是否筛选
       this.setState({goodsData: classList});
+    }
+
+    if (this.state.visible) {
+      this.setState({lessonListResultList: lessonListResultList});
     }
 
     return (
@@ -172,6 +212,25 @@ export default class UserDisplay extends React.PureComponent {
             onDelete={this.onDelete}
           />
         </PageHeaderLayout>
+
+        <div>
+          <Modal width={'80%'}
+                 title="课程详情"
+                 visible={this.state.visible}
+                 onOk={this.handleOk}
+                 onCancel={this.handleCancel}
+          >
+            <div style={{padding: '0 10%'}}>
+              <DetailsFrom
+                Submit={this.Submit}
+                Delete={this.onDelete}
+                lessonListResultList={this.state.lessonListResultList}
+              />
+            </div>
+          </Modal>
+        </div>
+
+
       </div>
     );
   }

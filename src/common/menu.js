@@ -9,7 +9,7 @@ const menuData = [{
     "icon": "bars",
     "path": "campusList",
   }, {
-    "name": "新增校区",
+    "name": "校区管理",
     "icon": "bars",
     "path": "campusAdd",
   }],
@@ -22,7 +22,7 @@ const menuData = [{
     "icon": "bars",
     "path": "classList",
   }, {
-    "name": "新增班级",
+    "name": "班级管理",
     "icon": "bars",
     "path": "classAdd",
   }],
@@ -35,7 +35,7 @@ const menuData = [{
     "icon": "bars",
     "path": "teachList",
   }, {
-    "name": "添加教师",
+    "name": "教师管理",
     "icon": "bars",
     "path": "teachAdd",
   }],
@@ -48,7 +48,7 @@ const menuData = [{
     "icon": "bars",
     "path": "studentList",
   }, {
-    "name": "添加学员",
+    "name": "学员管理",
     "icon": "bars",
     "path": "studentAdd",
   }],
@@ -61,7 +61,7 @@ const menuData = [{
     "icon": "bars",
     "path": "parentList",
   }, {
-    "name": "添加家长",
+    "name": "家长管理",
     "icon": "bars",
     "path": "parentAdd",
   }],

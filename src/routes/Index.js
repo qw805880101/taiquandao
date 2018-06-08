@@ -7,7 +7,7 @@ export default class UserDisplay extends React.PureComponent {
     return (
       <div style={{background: '#fff', weight: '100%', height: '100%', textAlign: 'center'}}>
 
-        <h1>欢迎进入XXX管理平台</h1>
+        <h1>欢迎进入花郎录管理平台</h1>
 
       </div>
     );

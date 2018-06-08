@@ -164,6 +164,21 @@ class UserDetailsFromImp extends React.Component {
               </Select>
             )}
           </FormItem>
+
+          <FormItem
+            {...formItemLayout}
+            label="剩余课时"
+            hasFeedback
+          >
+            {getFieldDecorator('studentDate', {
+              rules: [
+                {required: true, message: '请输入剩余课时!'},
+              ],
+            })(
+              <Input placeholder="请输入剩余课时"/>
+            )}
+          </FormItem>
+
           <FormItem
             wrapperCol={{span: 12, offset: 6}}
           >
