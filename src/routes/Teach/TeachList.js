@@ -21,6 +21,10 @@ export default class UserDisplay extends React.PureComponent {
     goodsData: [],
     isMerIdSearch: false,
     goodsColumns: [{
+      title: '序号',
+      dataIndex: 'idNum',
+      key: 'idNum',
+    }, {
       title: '教师名称',
       dataIndex: 'name',
       key: 'name',
@@ -91,17 +95,19 @@ export default class UserDisplay extends React.PureComponent {
 
   changeSearchId = (e) => {
     if (e.target.value.length == 0) {
-      this.setState({goodsData: this.props.teach.teachList});
+      // this.setState({goodsData: this.props.teach.teachList});
     }
     this.setState({searchName: e.target.value});
   }
 
   searchOnclick = () => {
     if (this.state.searchName === '') {
-      this.setState({goodsData: this.props.teach.teachList});
+      // this.setState({goodsData: this.props.teach.teachList});
+      this.getTeachList();
     } else {
       this.isMerIdSearch = true;
-      this.changeTab();
+      // this.changeTab();
+      this.getTeachList({Name: this.state.searchName});
     }
   }
 
@@ -144,7 +150,12 @@ export default class UserDisplay extends React.PureComponent {
     const {teach: {teachList}} = this.props;
 
     if (!this.isMerIdSearch) { //判断是否筛选
-      this.setState({goodsData: teachList});
+      if (teachList) {
+        for (let i = 0; i < teachList.length; i++) {
+          teachList[i].idNum = i + 1;
+        }
+        this.setState({goodsData: teachList});
+      }
     }
 
     return (

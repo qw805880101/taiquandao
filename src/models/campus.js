@@ -1,11 +1,13 @@
-import {addCampus, queryCampus} from '../services/api';
+import {addCampus, queryCampus, delCampus, update} from '../services/api';
 
 export default {
   namespace: 'campus',
 
   state: {
-    campusList: [],
+    campusList: '',
     addCampusData: '',
+    delCampusResult: '',
+    updateResultData: '',
   },
 
   effects: {
@@ -16,13 +18,39 @@ export default {
         payload: response,
       });
     },
-    * addCampus({payload}, {call, put}) {
+    * addCampus({payload, callback}, {call, put}) {
       const response = yield call(addCampus, payload);
-      console.log("addCampusData:",response);
+      console.log("addCampusData:", response);
       yield put({
         type: 'addCampusResult',
         payload: response,
       });
+      if (callback) {
+        callback();
+      }
+    },
+    * update({payload, callback}, {call, put}) {
+      const response = yield call(update, payload);
+      console.log("updateData:", response);
+      yield put({
+        type: 'updateResult',
+        payload: response,
+      });
+
+      if (callback) {
+        callback();
+      }
+    },
+    * delCampus({payload, callback}, {call, put}) {
+      const response = yield call(delCampus, payload);
+      console.log("addCampusData:", response);
+      yield put({
+        type: 'delCampusResult',
+        payload: response,
+      });
+      if (callback) {
+        callback();
+      }
     },
   },
 
@@ -38,6 +66,20 @@ export default {
       return {
         ...state,
         addCampusData: payload,
+      };
+    },
+
+    updateResult(state, {payload}) {
+      return {
+        ...state,
+        updateResultData: payload,
+      };
+    },
+
+    delCampusResult(state, {payload}) {
+      return {
+        ...state,
+        delCampusResult: payload,
       };
     },
   },

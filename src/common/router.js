@@ -98,7 +98,7 @@ export const getRouterData = (app) => {
     },
     //班级详情
     '/class/classAdd': {
-      component: dynamicWrapper(app, ['campus', 'classModel'], () => import('../routes/Class/ClassAdd')),
+      component: dynamicWrapper(app, ['campus', 'teach', 'classModel'], () => import('../routes/Class/ClassAdd')),
     },
     //教师列表
     '/teach/teachList': {
@@ -118,11 +118,11 @@ export const getRouterData = (app) => {
     },
     //家长列表
     '/parent/parentList': {
-      component: dynamicWrapper(app, ['login'], () => import('../routes/Parent/ParentList')),
+      component: dynamicWrapper(app, ['parent'], () => import('../routes/Parent/ParentList')),
     },
     //家长详情
     '/parent/parentAdd': {
-      component: dynamicWrapper(app, ['login'], () => import('../routes/Parent/ParentAdd')),
+      component: dynamicWrapper(app, ['parent', 'campus', 'classModel', 'student'], () => import('../routes/Parent/ParentAdd')),
     },
     //用户管理/用户列表
     '/userManage/userList/': {

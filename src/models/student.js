@@ -4,7 +4,7 @@ export default {
   namespace: 'student',
 
   state: {
-    studentList: [],
+    studentList: '',
     addStudentData: '',
   },
 

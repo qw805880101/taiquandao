@@ -8,6 +8,7 @@ import PageHeaderLayout from '../../layouts/PageHeaderLayout';
   campus,
   submitting: loading.effects['campus/queryCampusList'],
 }))
+
 export default class UserDisplay extends React.PureComponent {
   componentDidMount() {
     this.getCampusList();
@@ -19,9 +20,9 @@ export default class UserDisplay extends React.PureComponent {
     isMerIdSearch: false,
     goodsColumns: [{
       title: '序号',
-      dataIndex: 'id',
-      key: 'id',
-    },{
+      dataIndex: 'idNum',
+      key: 'idNum',
+    }, {
       title: '校区名称',
       dataIndex: 'name',
       key: 'name',
@@ -36,11 +37,11 @@ export default class UserDisplay extends React.PureComponent {
         <div>
           <a onClick={() => {
             console.log("e", e);
-          }} href={'#/campus/campusAdd?userId=' + e.campusId}>编辑</a>
+          }} href={'#/campus/campusAdd?id=' + e.id + '&name=' + e.name + '&address=' + e.address + '&type=1'}>编辑</a>
 
           <Divider type="vertical"/>
           <Popconfirm title="确定删除此校区" onConfirm={() => {
-            this.onDelete(e.campusId);
+            this.onDelete(e.id);
           }}>
             <a>删除</a>
           </Popconfirm>
@@ -66,43 +67,38 @@ export default class UserDisplay extends React.PureComponent {
     // // const dataSource = [...this.state.dataSource];
     // // this.setState({dataSource: dataSource.filter(item => item.key !== key)});
     // // this.isMerIdSearch = false;
-    // this.props.dispatch({
-    //   type: 'userManage/delUser',
-    //   payload: {
-    //     "appVersion": "1.0.0",
-    //     "timestamp": new Date().getTime(),
-    //     "terminalOs": "H5",
-    //     "actNo": "B5004",
-    //     ids: [key],
-    //     userId: sessionStorage.userId
-    //   },
-    //   callback: () => {
-    //     const delUserResult = this.props.userManage.delUserResult;
-    //     if (delUserResult && delUserResult.respCode == '0000') {
-    //       if (this.state.agencyId) {
-    //         this.getUser({"merchantId": this.state.agencyId});
-    //         this.state.agencyId = '';
-    //       } else {
-    //         this.getUser();
-    //       }
-    //     }
-    //   },
-    // });
+    this.props.dispatch({
+      type: 'campus/delCampus',
+      payload: {
+        id: key
+      },
+      callback: () => {
+        const delUserResult = this.props.campus.delCampusResult;
+        if (delUserResult && delUserResult.code == 200) {
+          this.getCampusList();
+        }
+      },
+    });
   }
 
   changeSearchId = (e) => {
     if (e.target.value.length == 0) {
-      this.setState({goodsData: this.props.campus.campusList});
+      // this.setState({goodsData: this.props.campus.campusList.list});
+      // this.getCampusList();
     }
     this.setState({searchName: e.target.value});
   }
 
   searchOnclick = () => {
     if (this.state.searchName === '') {
-      this.setState({goodsData: this.props.campus.campusList});
+      // this.setState({goodsData: this.props.campus.campusList.list});
+      this.getCampusList();
     } else {
       this.isMerIdSearch = true;
-      this.changeTab();
+      // this.changeTab();
+      this.getCampusList({
+        Name: this.state.searchName,
+      })
     }
   }
 
@@ -110,7 +106,7 @@ export default class UserDisplay extends React.PureComponent {
     const {searchName} = this.state;
     const reg = new RegExp(searchName, 'gi');
     this.setState({
-      goodsData: this.props.campus.campusList.map((record) => {
+      goodsData: this.props.campus.campusList.list.map((record) => {
         let searchNameMatch;
         if (searchName) {
           if (record.name == null) {
@@ -135,16 +131,27 @@ export default class UserDisplay extends React.PureComponent {
     });
   }
 
+  tabChannel = (current, size) => {
+    console.log("size:", current);
+    this.getCampusList({PageSize: current});
+  }
+
   addUser = () => {
     this.props.dispatch(routerRedux.push('/campus/campusAdd'));
   }
 
   render() {
 
-    const {campus: {campusList}} = this.props;
+    const {submitting, campus: {campusList}} = this.props;
+
 
     if (!this.isMerIdSearch) { //判断是否筛选
-      this.setState({goodsData: campusList});
+      if (campusList) {
+        for (let i = 0; i < campusList.list.length; i++) {
+          campusList.list[i].idNum = i + 1;
+        }
+        this.setState({goodsData: campusList.list});
+      }
     }
 
     return (
@@ -161,11 +168,17 @@ export default class UserDisplay extends React.PureComponent {
                   onClick={this.addUser}>新增校区</Button>
 
           <Table
+            loading={submitting}
             style={{marginBottom: 24, marginTop: 24, marginRight: 24}}
             dataSource={this.state.goodsData}
             columns={this.state.goodsColumns}
             rowKey="id"
             onDelete={this.onDelete}
+            pagination={{
+              pageSize: campusList.pageSize ? campusList.pageSize : '',
+              total: campusList.total,
+              onChange: this.tabChannel
+            }}
           />
         </PageHeaderLayout>
       </div>

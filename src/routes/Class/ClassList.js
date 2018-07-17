@@ -25,13 +25,17 @@ export default class UserDisplay extends React.PureComponent {
     isMerIdSearch: false,
     lessonListResultList: [],
     goodsColumns: [{
+      title: '序号',
+      dataIndex: 'idNum',
+      key: 'idNum',
+    }, {
       title: '班级名称',
       dataIndex: 'name',
       key: 'name',
     }, {
       title: '所在校区',
-      dataIndex: 'dan',
-      key: 'dan',
+      dataIndex: 'orgName',
+      key: 'orgName',
     }, {
       title: '段位',
       dataIndex: 'danDesc',
@@ -76,7 +80,7 @@ export default class UserDisplay extends React.PureComponent {
       visible: false,
     });
   }
-  getLessonList = (data) => { //获取机构列表请求
+  getLessonList = (data) => {
     if (!data) {
     }
     this.isMerIdSearch = false;
@@ -88,7 +92,7 @@ export default class UserDisplay extends React.PureComponent {
     });
   }
 
-  getClassList = (data) => { //获取机构列表请求
+  getClassList = (data) => {
     if (!data) {
     }
     this.isMerIdSearch = false;
@@ -101,47 +105,41 @@ export default class UserDisplay extends React.PureComponent {
   }
 
   onDelete = (key) => {
-    // console.log("key:", key);
-    // // const dataSource = [...this.state.dataSource];
-    // // this.setState({dataSource: dataSource.filter(item => item.key !== key)});
-    // // this.isMerIdSearch = false;
-    // this.props.dispatch({
-    //   type: 'userManage/delUser',
-    //   payload: {
-    //     "appVersion": "1.0.0",
-    //     "timestamp": new Date().getTime(),
-    //     "terminalOs": "H5",
-    //     "actNo": "B5004",
-    //     ids: [key],
-    //     userId: sessionStorage.userId
-    //   },
-    //   callback: () => {
-    //     const delUserResult = this.props.userManage.delUserResult;
-    //     if (delUserResult && delUserResult.respCode == '0000') {
-    //       if (this.state.agencyId) {
-    //         this.getUser({"merchantId": this.state.agencyId});
-    //         this.state.agencyId = '';
-    //       } else {
-    //         this.getUser();
-    //       }
-    //     }
-    //   },
-    // });
+    console.log("key:", key);
+    // const dataSource = [...this.state.dataSource];
+    // this.setState({dataSource: dataSource.filter(item => item.key !== key)});
+    // this.isMerIdSearch = false;
+    this.props.dispatch({
+      type: 'classModel/delClass',
+      payload: {
+        id: key,
+      },
+      callback: () => {
+        const delUserResult = this.props.classModel.delClassResult;
+        if (delUserResult && delUserResult.code == 200) {
+          this.getClassList();
+        }
+      },
+    });
   }
 
   changeSearchId = (e) => {
     if (e.target.value.length == 0) {
-      this.setState({goodsData: this.props.classModel.classList});
+      // this.setState({goodsData: this.props.classModel.classList});
     }
     this.setState({searchName: e.target.value});
   }
 
   searchOnclick = () => {
     if (this.state.searchName === '') {
-      this.setState({goodsData: this.props.classModel.classList});
+      // this.setState({goodsData: this.props.classModel.classList});
+      this.getClassList();
     } else {
       this.isMerIdSearch = true;
-      this.changeTab();
+      // this.changeTab();
+      this.getClassList({
+        Name: this.state.searchName,
+      })
     }
   }
 
@@ -149,7 +147,7 @@ export default class UserDisplay extends React.PureComponent {
     const {searchName} = this.state;
     const reg = new RegExp(searchName, 'gi');
     this.setState({
-      goodsData: this.props.classModel.classList.map((record) => {
+      goodsData: this.props.classModel.classList.list.map((record) => {
         let searchNameMatch;
         if (searchName) {
           if (record.name == null) {
@@ -178,13 +176,22 @@ export default class UserDisplay extends React.PureComponent {
     this.props.dispatch(routerRedux.push('/class/classAdd'));
   }
 
+  tabChannel = (current, size) => {
+    console.log("size:", current);
+    this.getClassList({PageSize: current});
+  }
 
   render() {
 
     const {classModel: {classList, lessonListResultList}} = this.props;
 
     if (!this.isMerIdSearch) { //判断是否筛选
-      this.setState({goodsData: classList});
+      if (classList) {
+        for (let i = 0; i < classList.list.length; i++) {
+          classList.list[i].idNum = i + 1;
+        }
+        this.setState({goodsData: classList.list});
+      }
     }
 
     if (this.state.visible) {
@@ -210,6 +217,11 @@ export default class UserDisplay extends React.PureComponent {
             columns={this.state.goodsColumns}
             rowKey="id"
             onDelete={this.onDelete}
+            pagination={{
+              pageSize: classList.pageSize ? classList.pageSize : '',
+              total: classList.total,
+              onChange: this.tabChannel
+            }}
           />
         </PageHeaderLayout>
 

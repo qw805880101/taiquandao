@@ -14,7 +14,7 @@ for (let i = 10; i < 36; i++) {
 const agencyTreeData = data => data.map((item) => {
   return (
     <Option key={item.id}>
-      {item.date}
+      {item.name}
     </Option>
   );
 });
@@ -71,26 +71,20 @@ class UserDetailsFromImp extends React.Component {
   onCampusChange = (e) => {
     console.log("e:", e);
     this.setState({campusStatus: false})
+    this.props.getClassList({'TrainingOrganizationId': e});
   }
 
   onClassChange = (e) => {
     console.log("e:", e);
     this.setState({classStatus: false})
+    this.props.getStudentList({'ClassId': e});
   }
 
   render() {
     const {getFieldDecorator} = this.props.form;
 
-    // if (type === 'add') { //类型新增
-    //   this.disPlay = true;
-    //   this.delDisplay = 'none';
-    // } else if (type === 'mod') { //类型修改
-    //   this.disPlay = true;
-    //   this.delDisplay = 'block';
-    // } else {
-    //   this.disPlay = false;
-    //   this.delDisplay = 'none';
-    // }
+    const {campusList, classList, studentList} = this.props;
+
     const formItemLayout = {
       labelCol: {span: 6},
       wrapperCol: {span: 12, offset: 1},
@@ -152,7 +146,7 @@ class UserDetailsFromImp extends React.Component {
               ],
             })(
               <Select onChange={this.onCampusChange} placeholder="请选择所在校区">
-                {agencyTreeData(campusData)}
+                {agencyTreeData(campusList)}
               </Select>
             )}
           </FormItem>
@@ -169,7 +163,7 @@ class UserDetailsFromImp extends React.Component {
             })(
               <Select onChange={this.onClassChange} placeholder={this.state.campusStatus ? "请先选择所在校区" : "请选择所在班级"}
                       disabled={this.state.campusStatus}>
-                {agencyTreeData(classData)}
+                {agencyTreeData(classList)}
               </Select>
             )}
           </FormItem>
@@ -188,7 +182,7 @@ class UserDetailsFromImp extends React.Component {
                 mode="tags"
                 placeholder={this.state.classStatus ? "请先选择所在校区/班级" : "请选择学员"} disabled={this.state.classStatus}
               >
-                {teachChildren}
+                {agencyTreeData(studentList)}
               </Select>
             )}
           </FormItem>

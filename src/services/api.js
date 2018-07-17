@@ -111,6 +111,28 @@ export async function addCampus(params) {
 }
 
 /**
+ * 编辑校区
+ * @param params
+ * @returns {Promise<Object>}
+ */
+export async function update(params) {
+  return request(setUrl('api/TrainingOrganization/Update', params), {
+    method: 'POST',
+  });
+}
+
+/**
+ * 删除校区
+ * @param params
+ * @returns {Promise<Object>}
+ */
+export async function delCampus(params) {
+  return request(setUrl('api/TrainingOrganization/Delete', params), {
+    method: 'POST',
+  });
+}
+
+/**
  * 查询班级
  * @param params
  * @returns {Promise<Object>}
@@ -128,6 +150,17 @@ export async function queryClass(params) {
  */
 export async function addClass(params) {
   return request(setUrl('api/Class/Add', params), {
+    method: 'POST',
+  });
+}
+
+/**
+ * 删除班级
+ * @param params
+ * @returns {Promise<Object>}
+ */
+export async function delClass(params) {
+  return request(setUrl('api/Class/Delete', params), {
     method: 'POST',
   });
 }
@@ -183,6 +216,50 @@ export async function addStudent(params) {
  */
 export async function lessonList(params) {
   return request(setUrl('api/teacher/lesson/LessonList', params), {
+    method: 'POST',
+  });
+}
+
+/**
+ * 新增家长
+ * @param params
+ * @returns {Promise<Object>}
+ */
+export async function addParent(params) {
+  return request(setUrl('api/Genearch/Add', params), {
+    method: 'POST',
+  });
+}
+
+/**
+ * 查询家长
+ * @param params
+ * @returns {Promise<Object>}
+ */
+export async function queryParent(params) {
+  return request(setUrl('api/Genearch/Query', params), {
+    method: 'POST',
+  });
+}
+
+/**
+ * 删除家长
+ * @param params
+ * @returns {Promise<Object>}
+ */
+export async function deleteParent(params) {
+  return request(setUrl('api/Genearch/Delete', params), {
+    method: 'POST',
+  });
+}
+
+/**
+ * 编辑家长
+ * @param params
+ * @returns {Promise<Object>}
+ */
+export async function updateParent(params) {
+  return request(setUrl('api/Genearch/Update', params), {
     method: 'POST',
   });
 }

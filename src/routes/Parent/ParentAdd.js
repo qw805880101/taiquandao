@@ -8,47 +8,66 @@ import {getQueryUrlParamVal} from "../../utils/utils";
 
 let type = '';
 
+@connect(({parent, campus, classModel, student, loading}) => ({
+  parent,
+  campus, classModel, student,
+  submitting: loading.effects['classModel/addClass'],
+}))
 export default class Agency extends React.PureComponent {
-
   componentDidMount() {
-    const id = getQueryUrlParamVal('userId');
-    type = getQueryUrlParamVal('type'); //
-    if (id != null && id != '') {
-      this.getAgencyDetail(id);
-    }
+    this.getCampusList();
+  }
+
+  state = {
+    campusList: [],
+    classList: [],
+    studentList: [],
   }
 
   Submit = (values) => {
     console.log('提交的参数', values);
-    // if (values.twoDimensionCode) {
-    //   values.twoDimensionCode = values.twoDimensionCode.split(',')[1];
-    // }
-    // this.props.dispatch({ //机构注册
-    //   type: 'agency/agencyRegister',
-    //   payload: {
-    //     "appVersion": "1.0.0",
-    //     "timestamp": new Date().getTime(),
-    //     "terminalOs": "H5",
-    //     "actNo": "B2001",
-    //     "userId": sessionStorage.userId,
-    //     "id": type === 'mod' ? getQueryUrlParamVal('userId') : '',
-    //     ...values
-    //   },
-    // });
+    this.props.dispatch({
+      type: 'parent/addParent',
+      payload: {
+        ...values,
+      }
+    });
   }
 
-  getAgencyDetail = (id) => { //获取机构详情
-    // this.props.dispatch({
-    //   type: 'agency/getAgencyDetail',
-    //   payload: {
-    //     "appVersion": "1.0.0",
-    //     "timestamp": new Date().getTime(),
-    //     "terminalOs": "H5",
-    //     "actNo": "B2003",
-    //     "userId": sessionStorage.userId,
-    //     "id": id,
-    //   },
-    // });
+  getCampusList = (data) => { //获取校区
+    console.log("获取校区:",);
+    if (!data) {
+    }
+    this.props.dispatch({
+      type: 'campus/queryCampusList',
+      payload: {
+        ...data,
+      }
+    });
+  }
+
+  getClassList = (data) => { //获取班级列表请求
+    if (!data) {
+    }
+    console.log("data:", data);
+    this.props.dispatch({
+      type: 'classModel/queryClassList',
+      payload: {
+        ...data,
+      }
+    });
+  }
+
+  getStudentList = (data) => { //获取学员列表请求
+    if (!data) {
+    }
+    console.log("data:", data);
+    this.props.dispatch({
+      type: 'student/queryStudentList',
+      payload: {
+        ...data,
+      }
+    });
   }
 
   onDelete = () => { //删除机构请求
@@ -82,6 +101,21 @@ export default class Agency extends React.PureComponent {
   }
 
   render() {
+
+    const {campus: {campusList}, classModel: {classList}, student: {studentList}} = this.props;
+
+    if (campusList && campusList.list) {
+      this.state.campusList = campusList.list;
+    }
+
+    if (classList && classList.list) {
+      this.state.classList = classList.list;
+    }
+
+    if (studentList && studentList.list) {
+      this.state.studentList = studentList.list;
+    }
+
     return (
       <div style={{background: '#fff', height: '100%'}}>
         <PageHeaderLayout
@@ -90,6 +124,11 @@ export default class Agency extends React.PureComponent {
           <FromTab
             Submit={this.Submit}
             Delete={this.onDelete}
+            campusList={this.state.campusList}
+            classList={this.state.classList}
+            studentList={this.state.studentList}
+            getClassList={this.getClassList}
+            getStudentList={this.getStudentList}
           />
         </PageHeaderLayout>
       </div>

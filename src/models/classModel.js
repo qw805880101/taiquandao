@@ -1,12 +1,13 @@
-import {addClass, queryClass, lessonList} from '../services/api';
+import {addClass, queryClass, lessonList, delClass} from '../services/api';
 
 export default {
   namespace: 'classModel',
 
   state: {
-    classList: [],
+    classList: '',
     addClassData: '',
-    lessonListResultList: []
+    lessonListResultList: [],
+    delClassResult: ''
   },
 
   effects: {
@@ -33,6 +34,18 @@ export default {
         payload: response,
       });
     },
+    * delClass({payload, callback}, {call, put}) {
+      const response = yield call(delClass, payload);
+      console.log("lessonListData:", response);
+      yield put({
+        type: 'delClassResult',
+        payload: response,
+      });
+      if (callback) {
+        console.log("callback:",);
+        callback();
+      }
+    },
   },
 
   reducers: {
@@ -53,6 +66,12 @@ export default {
       return {
         ...state,
         lessonListResultList: payload.data.list,
+      };
+    },
+    delClassResult(state, {payload}) {
+      return {
+        ...state,
+        delClassResult: payload,
       };
     },
   },

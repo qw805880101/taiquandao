@@ -53,6 +53,8 @@ class UserDetailsFromImp extends React.Component {
   render() {
     const {getFieldDecorator} = this.props.form;
 
+    const {campus} = this.props;
+
     // if (type === 'add') { //类型新增
     //   this.disPlay = true;
     //   this.delDisplay = 'none';
@@ -80,6 +82,7 @@ class UserDetailsFromImp extends React.Component {
               rules: [
                 {required: true, message: '请输入校区名称!'},
               ],
+              initialValue: campus.name
             })(
               <Input placeholder="请输入校区名称"/>
             )}
@@ -94,6 +97,7 @@ class UserDetailsFromImp extends React.Component {
               rules: [
                 {required: true, message: '请输入校区地址!'},
               ],
+              initialValue: campus.address
             })(
               <Input placeholder="请输入校区地址"/>
             )}

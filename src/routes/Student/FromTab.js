@@ -78,7 +78,7 @@ class UserDetailsFromImp extends React.Component {
   onCampusChange = (e) => {
     console.log("e:", e);
     this.setState({classStatus: false})
-    this.props.getClassList(e);
+    this.props.getClassList({'TrainingOrganizationId': e});
   }
 
   render() {

@@ -25,6 +25,11 @@ export default class Agency extends React.PureComponent {
     this.getCampusList();
   }
 
+  state = {
+    campusList: [],
+    classList: [],
+  }
+
   getCampusList = (data) => { //获取校区
     if (!data) {
     }
@@ -40,6 +45,7 @@ export default class Agency extends React.PureComponent {
   getClassList = (data) => { //获取机构列表请求
     if (!data) {
     }
+    console.log("data:", data);
     this.isMerIdSearch = false;
     this.props.dispatch({
       type: 'classModel/queryClassList',
@@ -105,12 +111,13 @@ export default class Agency extends React.PureComponent {
 
   render() {
 
-    const {campus: {campusList}, classModel: {classList}, student:{addStudentData}} = this.props;
-    if (addStudentData.code != null && addStudentData.code != 200) {
-      alert(addStudentData.message);
-    } else if (addStudentData.code === 200 && addStudentData.success) {
-      // alert(addStudentData.message != null ? addStudentData.message : '成功');
-      this.props.dispatch(routerRedux.push('/campus/campusList'));
+    const {campus: {campusList}, classModel: {classList}, student: {addStudentData}} = this.props;
+
+    if (campusList && campusList.list) {
+      this.state.campusList = campusList.list;
+    }
+    if (classList && classList.list) {
+      this.state.classList = classList.list;
     }
 
     return (
@@ -121,8 +128,8 @@ export default class Agency extends React.PureComponent {
           <FromTab
             Submit={this.Submit}
             Delete={this.onDelete}
-            campusList={campusList}
-            classList={classList}
+            campusList={this.state.campusList}
+            classList={this.state.classList}
             getClassList={this.getClassList}
           />
         </PageHeaderLayout>

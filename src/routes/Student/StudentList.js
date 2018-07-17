@@ -22,6 +22,10 @@ export default class UserDisplay extends React.PureComponent {
     goodsData: [],
     isMerIdSearch: false,
     goodsColumns: [{
+      title: '序号',
+      dataIndex: 'idNum',
+      key: 'idNum',
+    }, {
       title: '学员名称',
       dataIndex: 'studentName',
       key: 'studentName',
@@ -104,17 +108,19 @@ export default class UserDisplay extends React.PureComponent {
 
   changeSearchId = (e) => {
     if (e.target.value.length == 0) {
-      this.setState({goodsData: this.props.userManage.list});
+      // this.setState({goodsData: this.props.userManage.list});
     }
     this.setState({searchName: e.target.value});
   }
 
   searchOnclick = () => {
     if (this.state.searchName === '') {
-      this.setState({goodsData: this.props.userManage.list});
+      // this.setState({goodsData: this.props.userManage.list});
+      this.getStudentList();
     } else {
       this.isMerIdSearch = true;
-      this.changeTab();
+      // this.changeTab();
+      this.getStudentList({Name: this.state.searchName});
     }
   }
 
@@ -151,12 +157,21 @@ export default class UserDisplay extends React.PureComponent {
     this.props.dispatch(routerRedux.push('/student/studentAdd'));
   }
 
+  tabChannel = (current, size) => {
+    console.log("size:", current);
+    this.getStudentList({PageSize: current});
+  }
 
   render() {
     const {submitting, student: {studentList}} = this.props;
 
     if (!this.isMerIdSearch) { //判断是否筛选
-      this.setState({goodsData: studentList});
+      if (studentList) {
+        for (let i = 0; i < studentList.list.length; i++) {
+          studentList.list[i].idNum = i + 1;
+        }
+        this.setState({goodsData: studentList.list});
+      }
     }
 
     return (
@@ -179,6 +194,11 @@ export default class UserDisplay extends React.PureComponent {
             rowKey="id"
             onDelete={this.onDelete}
             loading={submitting}
+            pagination={{
+              pageSize: studentList.pageSize ? studentList.pageSize : '',
+              total: studentList.total,
+              onChange: this.tabChannel
+            }}
           />
         </PageHeaderLayout>
       </div>

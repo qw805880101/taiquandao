@@ -117,7 +117,7 @@ class UserDetailsFromImp extends React.Component {
   render() {
     const {getFieldDecorator} = this.props.form;
 
-    const {campusList} = this.props;
+    const {campusList, teachList} = this.props;
 
     // if (type === 'add') { //类型新增
     //   this.disPlay = true;
@@ -171,7 +171,7 @@ class UserDetailsFromImp extends React.Component {
             label="老师"
             hasFeedback
           >
-            {getFieldDecorator('TeacherId', {
+            {getFieldDecorator('TeacherIds', {
               rules: [
                 {required: true, message: '请选择老师!'},
               ],
@@ -180,7 +180,7 @@ class UserDetailsFromImp extends React.Component {
                 mode="tags"
                 placeholder="请选择老师"
               >
-                {teachChildren}
+                {agencyTreeData(teachList)}
               </Select>
             )}
           </FormItem>
@@ -189,7 +189,7 @@ class UserDetailsFromImp extends React.Component {
             label="段位"
             hasFeedback
           >
-            {getFieldDecorator('rank', {
+            {getFieldDecorator('Dan', {
               rules: [
                 {required: true, message: '请选择段位!'},
               ],

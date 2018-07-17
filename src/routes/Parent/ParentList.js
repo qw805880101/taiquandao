@@ -26,14 +26,14 @@ const data = [{
   student: '王麻子之子',
 },];
 
-@connect(({userManage, agency, loading}) => ({
-  userManage,
-  agency,
-  submitting: loading.effects['userManage/getUser' || 'userManage/delUser'],
+@connect(({parent, loading}) => ({
+  parent,
+  submitting: loading.effects['parent/queryParent'],
 }))
 
 export default class UserDisplay extends React.PureComponent {
   componentDidMount() {
+    this.getParentList();
   }
 
   state = {
@@ -41,6 +41,10 @@ export default class UserDisplay extends React.PureComponent {
     goodsData: [],
     isMerIdSearch: false,
     goodsColumns: [{
+      title: '序号',
+      dataIndex: 'idNum',
+      key: 'idNum',
+    }, {
       title: '家长名称',
       dataIndex: 'parentName',
       key: 'parentName',
@@ -76,67 +80,48 @@ export default class UserDisplay extends React.PureComponent {
     }],
   }
 
-  getAgencyList = (data) => { //获取机构列表请求
-    // if (!data) {
-    //   this.state.treeData = [];
-    //   allAgencyListData = [];
-    //   this.props.agency.agencyList = [];
-    // }
-    // this.isMerIdSearch = false;
-    // this.props.dispatch({
-    //   type: 'agency/agencyList',
-    //   payload: {
-    //     "appVersion": "1.0.0",
-    //     "timestamp": new Date().getTime(),
-    //     "terminalOs": "H5",
-    //     "actNo": "B2001",
-    //     ...data,
-    //   }
-    // });
+  getParentList = (data) => { //获取家长列表请求
+    if (!data) {
+    }
+    this.isMerIdSearch = false;
+    this.props.dispatch({
+      type: 'parent/queryParent',
+      payload: {
+        ...data,
+      }
+    });
   }
 
   onDelete = (key) => {
-    // console.log("key:", key);
-    // // const dataSource = [...this.state.dataSource];
-    // // this.setState({dataSource: dataSource.filter(item => item.key !== key)});
-    // // this.isMerIdSearch = false;
-    // this.props.dispatch({
-    //   type: 'userManage/delUser',
-    //   payload: {
-    //     "appVersion": "1.0.0",
-    //     "timestamp": new Date().getTime(),
-    //     "terminalOs": "H5",
-    //     "actNo": "B5004",
-    //     ids: [key],
-    //     userId: sessionStorage.userId
-    //   },
-    //   callback: () => {
-    //     const delUserResult = this.props.userManage.delUserResult;
-    //     if (delUserResult && delUserResult.respCode == '0000') {
-    //       if (this.state.agencyId) {
-    //         this.getUser({"merchantId": this.state.agencyId});
-    //         this.state.agencyId = '';
-    //       } else {
-    //         this.getUser();
-    //       }
-    //     }
-    //   },
-    // });
+    this.props.dispatch({
+      type: 'parent/deleteParent',
+      payload: {
+        id: key
+      },
+      callback: () => {
+        const delUserResult = this.props.parent.delParentResult;
+        if (delUserResult && delUserResult.code == 200) {
+          this.getParentList();
+        }
+      },
+    });
   }
 
   changeSearchId = (e) => {
     if (e.target.value.length == 0) {
-      this.setState({goodsData: this.props.userManage.list});
+      // this.setState({goodsData: this.props.userManage.list});
     }
     this.setState({searchName: e.target.value});
   }
 
   searchOnclick = () => {
     if (this.state.searchName === '') {
-      this.setState({goodsData: this.props.userManage.list});
+      // this.setState({goodsData: this.props.userManage.list});
+      this.getParentList();
     } else {
       this.isMerIdSearch = true;
-      this.changeTab();
+      // this.changeTab();
+      this.getParentList({Name: this.state.searchName});
     }
   }
 
@@ -173,8 +158,25 @@ export default class UserDisplay extends React.PureComponent {
     this.props.dispatch(routerRedux.push('/parent/parentAdd'));
   }
 
+  tabChannel = (current, size) => {
+    console.log("size:", current);
+    this.getParentList({PageSize: current});
+  }
 
   render() {
+
+    const {submitting, parent: {parentList}} = this.props;
+
+
+    if (!this.isMerIdSearch) { //判断是否筛选
+      if (parentList) {
+        for (let i = 0; i < parentList.list.length; i++) {
+          parentList.list[i].idNum = i + 1;
+        }
+        this.setState({goodsData: parentList.list});
+      }
+    }
+
     return (
       <div style={{background: '#fff', height: '100%'}}>
         <PageHeaderLayout title="家长管理"
@@ -189,11 +191,17 @@ export default class UserDisplay extends React.PureComponent {
                   onClick={this.addUser}>添加家长</Button>
 
           <Table
+            loading={submitting}
             style={{marginBottom: 24, marginTop: 24, marginRight: 24}}
-            dataSource={data}
+            dataSource={this.state.goodsData}
             columns={this.state.goodsColumns}
             rowKey="id"
             onDelete={this.onDelete}
+            pagination={{
+              pageSize: parentList.pageSize ? parentList.pageSize : '',
+              total: parentList.total,
+              onChange: this.tabChannel
+            }}
           />
         </PageHeaderLayout>
       </div>
