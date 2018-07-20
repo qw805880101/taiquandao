@@ -154,11 +154,14 @@ class BasicLayout extends React.PureComponent {
         <Layout>
           <Header style={{padding: 0}}>
             <GlobalHeader
+              currentUser={{
+                name: sessionStorage.userName,
+                avatar: sessionStorage.headPic,
+              }}
               logo={logo}
               collapsed={collapsed}
               onCollapse={this.handleMenuCollapse}
               onMenuClick={this.handleMenuClick}
-              currentUser={currentUser}
             />
           </Header>
           <Content style={{margin: '24px 0 0 24px', height: '100%', overflow: 'hidden'}}>

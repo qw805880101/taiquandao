@@ -10,8 +10,8 @@ export default {
     loginData: {
       result: {}
     },
-    test:'',
-    testList:[],
+    test: '',
+    testList: [],
   },
 
   effects: {
@@ -30,6 +30,9 @@ export default {
           state: response.data,
         }
         sessionStorage.token = response.data.token;
+        sessionStorage.userName = response.data.userInfo.userName;
+        sessionStorage.headPic = response.data.userInfo.headPic;
+        sessionStorage.userId = response.data.userInfo.userId;
         yield put(routerRedux.push(path));
       }
     },

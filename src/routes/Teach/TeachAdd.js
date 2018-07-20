@@ -27,9 +27,10 @@ export default class Agency extends React.PureComponent {
   Submit = (values) => {
     console.log('提交的参数', values);
     isResult = true;
-    this.props.dispatch({ //机构注册
+    this.props.dispatch({ //添加教师
       type: 'teach/addTeach',
       payload: {
+        userId:sessionStorage.userId,
         ...values
       },
     });
